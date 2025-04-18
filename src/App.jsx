@@ -20,11 +20,13 @@ useEffect(getPersons,[])
   /* maneja el agregado de los contactos */
   const addPerson=(event)=> {
     event.preventDefault()
-    const newPerson={name: newName, number: newNumber, id:(persons.length + 1)}
+    const newPerson={name: newName, number: newNumber}
     if(persons.some((person)=> person.name.toLowerCase() === newPerson.name.toLowerCase())){
       alert(`${newPerson.name} is already added to phonebook`)
     }else{
-      setPersons(persons.concat(newPerson))
+      axios
+      .post('http://localhost:3001/persons',newPerson)
+      .then(response=>setPersons(persons.concat(response.data)))
       setNewName('')
       setNewNumber('')
     }
