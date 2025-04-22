@@ -3,6 +3,7 @@ import axios from 'axios'
 import Filter from './components/Filter'
 import PersonForm from './components/PersonForm'
 import Persons from './components/Persons'
+import agendaService from './services/Agenda'
 
 const App = () => {
   const [persons, setPersons] = useState([]) 
@@ -12,23 +13,46 @@ const App = () => {
   const toShow = persons.filter((person)=>person.name.toLowerCase().includes(showAll.toLowerCase()))
 
 const getPersons =()=>{
-axios.get('http://localhost:3001/persons').then((response)=>setPersons(response.data))
+  agendaService
+    .getAll()
+    .then((response)=>{
+      setPersons(response.data)
+    }
+  )
 }
 
 useEffect(getPersons,[])
 
   /* maneja el agregado de los contactos */
   const addPerson=(event)=> {
+
     event.preventDefault()
     const newPerson={name: newName, number: newNumber}
-    if(persons.some((person)=> person.name.toLowerCase() === newPerson.name.toLowerCase())){
+
+    if(persons.some((person)=> {
+      person.name.toLowerCase() === newPerson.name.toLowerCase()
+    }))
+    {
       alert(`${newPerson.name} is already added to phonebook`)
-    }else{
-      axios
-      .post('http://localhost:3001/persons',newPerson)
-      .then(response=>setPersons(persons.concat(response.data)))
+    }
+    else
+    {
+      agendaService
+      .create(newPerson)
+      .then(response=>{
+        setPersons(persons.concat(response.data))
+      }
+    )
       setNewName('')
       setNewNumber('')
+    }
+  }
+
+  const deletPerson=(id,name)=>{
+    if(confirm(`delete ${name} ?`)){
+      agendaService
+      .delet(id)
+      .then(setPersons(persons.filter(person=>person.id !== id)))
     }
   }
   /* reflejan los cambios de los diferentes campos respectivos */
@@ -53,7 +77,7 @@ useEffect(getPersons,[])
       newNumber={newNumber}
       />
       <h2>Numbers</h2>
-        <Persons toShow={toShow}/>
+        <Persons toShow={toShow} deletPerson={deletPerson}/>
     </div>
   )
 }
