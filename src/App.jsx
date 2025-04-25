@@ -67,8 +67,11 @@ useEffect(getPersons,[])
                 ,5000)
             })
             .catch((error) => {
-              console.error('Error updating person:', error)
-              alert(`Failed to update ${newPerson.name}.`)
+              setMessage(`An error occurred while trying to update the data`)
+              setTypeMenssage('error')
+              setTimeout(()=>{
+                setMessage(null)}
+                ,5000)
             })
         }
       } else {
@@ -91,8 +94,11 @@ useEffect(getPersons,[])
         setTypeMenssage('confirm')
       })
       .catch((error) => {
-        console.error('Error adding person:', error)
-        alert('Failed to add the person.')
+        setMessage(`Something went wrong when trying to add a person`)
+        setTypeMenssage('error')
+        setTimeout(()=>{
+          setMessage(null)}
+          ,5000)
       })
     }
   }
