@@ -91,9 +91,12 @@ useEffect(getPersons,[])
         setNewNumber('')
         setMessage(`${newPerson.name} has been added`)
         setTypeMenssage('confirm')
+        setTimeout(()=>{
+            setMessage(null)}
+          ,5000)
       })
       .catch((error) => {
-        setMessage(`Something went wrong when trying to add a person`)
+        setMessage(`${error.response.data.error}`)
         setTypeMenssage('error')
         setTimeout(()=>{
           setMessage(null)}
